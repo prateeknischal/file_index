@@ -1,0 +1,64 @@
+__author__ = 'Prateek'
+
+import os
+import pickle
+import utils.name_splitter
+
+class BuildDS:
+    """
+	Reads from the indexed file and converts build a dictionary
+	based on the filenames as keys and the values being the list of
+	locations where the filename was found
+	"""
+
+    def __init__(self, index_file_name, dump_file_name):
+        self.index_file_name = index_file_name;
+        self.dump_file_name = dump_file_name
+        self.dt = {}
+
+    def extract_file_names(self):
+        dump_dir = os.path.join(os.getcwd(), ".dump")
+        with open(os.path.join(dump_dir, self.index_file_name), "r") as fp:
+            for line in fp:
+                fname = line.strip("\n")
+                d = os.path.basename(fname)
+                path = line[: -len(d) - 1]
+                tok_list = utils.name_splitter.split_file_name(d)
+                # TODO reduce memory print by mapping the path to numbers as they are repetitve
+                for token in tok_list:
+                    if self.dt.get(token, None) is None:
+                        #self.dt[token] = [path]
+                        #to display the complete filenames with the path
+                        self.dt[token] = [fname]
+                    else:
+                        #self.dt[token].append(path)
+                        #to display the complete filename with the path
+                        self.dt[token].append(fname)
+
+    def serialize_dt(self):
+        dir_path = os.path.join(os.getcwd(), ".dump")
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
+        print ("serialize file " + os.path.join(dir_path, self.dump_file_name))
+        with open(os.path.join(dir_path, self.dump_file_name), "wb") as fp:
+            pickle.dump(self.dt, fp)
+
+    def check_dump_file(self):
+        d = os.getcwd()
+        d = os.path.join(d, ".dump")
+
+        if os.path.exists(d):
+            #dump dir exists
+            #load the db from it when not forced to crawl
+            if os.path.isfile(self.dump_file_name):
+                with open(os.path.join(d, self.dump_file_name), "rb") as fp:
+                    self.dt = pickle.load(fp)
+                return True
+            else:
+                return False
+        return False
+    
+    def begin(self):
+        if not self.check_dump_file():
+            self.extract_file_names()
+            self.serialize_dt()
