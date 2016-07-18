@@ -1,4 +1,6 @@
 #temporary files
+.idea/
 .dump/
+__pycache__/
 *.pyc
 *.py~
