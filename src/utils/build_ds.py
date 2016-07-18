@@ -72,5 +72,6 @@ class BuildDS:
         if not self.check_dump_file():
             self.extract_file_names()
             self.serialize_dt()
+            
         #load the list of file extensions available
         self.avail_ext = self.dt.keys()
