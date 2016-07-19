@@ -3,7 +3,8 @@ __author__ = 'Prateek'
 import os
 from hashlib import md5
 from collections import deque
-
+import sys
+import codecs
 class NoSuchDirectory(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
@@ -21,7 +22,10 @@ class Crawler:
         #temp dir for the dump files
         dump_dir = os.path.join(os.getcwd(), ".dump")
         output_file = os.path.join(dump_dir, self.dir_name_hash + ".txt") #<md5>.txt
-
+        # create an instance variable to store the file name
+        # and prevent file name changes wit direct access
+        self.set_output_file_name(output_file)
+        
         if (os.path.isfile(output_file) == False) or (force_crawl == True):
             if not os.path.exists(dump_dir):
                 os.mkdir(dump_dir)
@@ -57,12 +61,15 @@ class Crawler:
                 else:
                     self.append_to_index(abs_path)
 
+    def set_output_file_name(self, output_file):
+        self.output_file = output_file
+        
     def append_to_index(self, file_name):
-        self.file_index.append(file_name)
+        self.file_index.append(file_name.encode('utf-8'))
 
     def write_to_file(self, output_file):
-        with open(output_file, "w") as f:
-            f.write("\n".join(f for f in self.file_index))
+        with codecs.open(output_file, "w", "utf-8") as f:
+            f.write("\n".join(f.decode('utf-8', 'ignore') for f in self.file_index))
 
 if __name__ == "__main__":
     c = Crawler("C:\\users\\prateek\\desktop\\code\\")

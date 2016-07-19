@@ -5,7 +5,7 @@ import http.server
 import argparse
 
 class App:
-    def __init__(self, path, force_crawl = False):
+    def __init__(self, path, force_crawl = False, force_index = False):
         #build the index
         self.path = path
 
@@ -13,6 +13,12 @@ class App:
         self.crawler = crawler.Crawler(path, force_crawl)
         self.dir_name_hash = self.crawler.dir_name_hash
 
+        if (force_index == True):
+            # Stop the process and return with just an index file that contains a list
+            # of all file names in the root dir
+            print ("Crawling done and written in {}.txt".format(self.crawler.output_file))
+            print ("Exiting...")
+            return 
         #build the ds
         print ("Init indexing...")
         self.build_ds = build_ds.BuildDS(index_file_name = self.dir_name_hash + ".txt",
@@ -36,8 +42,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("src", help = "The root dir for crawl")
     parser.add_argument("-f", "--force",
-						action = "store_true" , dest = "force",
-						default = False,
-						help = "Force the crawler to index pre-indexed paths")
+			action = "store_true" , dest = "force",
+		      	default = False,
+		        help = "Force the crawler to index pre-indexed paths")
+    parser.add_argument("-i", "--index", dest = "index",
+                        action = "store_true",
+                        default = False,
+                        help = "Force the crawler to just build a text based list for archiving the file list")
     args = parser.parse_args()
-    App(args.src, args.force)
+    App(args.src, args.force, args.index)
