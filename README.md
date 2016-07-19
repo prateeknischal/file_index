@@ -19,13 +19,16 @@ and all combinations of the names in the list, eg : JavaPlayer.
 The name search is NOT case sensitive but to obtain combination of search terms like "JavaPlayer" it must has camel casing (that is what allows segmentation of words).
 
 ```
-Usage : app.py [-h] [-f] src
+usage: app.py [-h] [-f] [-i] src
 
 positional arguments:
-    src	   The root dir for crawl
+  src          The root dir for crawl
+
 optional arguments:
-    -h,	 --help		    show this message and exit
-    -f,	 --force    	Force the crawler to index pre-indexed paths
+  -h, --help   show this help message and exit
+  -f, --force  Force the crawler to index pre-indexed paths
+  -i, --index  Force the crawler to just build a text based list for archiving
+               the file list
 ```
 ##### Querying :
 A simple GET request is sufficient for querying.
