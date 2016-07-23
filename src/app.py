@@ -3,6 +3,7 @@ __author__ = 'Prateek'
 from utils import *
 import http.server
 import argparse
+import os
 
 class App:
     def __init__(self, path, force_crawl = False, force_index = False):
@@ -16,7 +17,8 @@ class App:
         if (force_index == True):
             # Stop the process and return with just an index file that contains a list
             # of all file names in the root dir
-            print ("Crawling done and written in {}.txt".format(self.crawler.output_file))
+            print ("Crawling done and written in {}".format(self.crawler.output_file))
+            print ("File location : {}".format(os.path.join(os.getcwd(), ".dump", self.crawler.output_file)))
             print ("Exiting...")
             return 
         #build the ds
